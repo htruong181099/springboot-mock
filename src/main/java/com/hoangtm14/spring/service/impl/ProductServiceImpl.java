@@ -1,8 +1,12 @@
 package com.hoangtm14.spring.service.impl;
 
+import com.hoangtm14.spring.constants.Constants;
+import com.hoangtm14.spring.exception.NotFoundException;
 import com.hoangtm14.spring.model.entity.Product;
+import com.hoangtm14.spring.model.request.CreateProductRequest;
 import com.hoangtm14.spring.repository.ProductRepository;
 import com.hoangtm14.spring.service.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,28 +16,48 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
     @Override
-    public List<Product> getAllProducts(){
-        return productRepository.findAll();
+    public List<Product> getAllProducts() {
+        log.info("getAllProducts" + Constants.BEGIN_SERVICE);
+        try {
+            return productRepository.findAll();
+        } finally {
+            log.info("getAllProducts" + Constants.END_SERVICE);
+        }
     }
 
     @Override
     public Product getProduct(UUID id) {
-        Optional<Product> product = productRepository.findById(id);
-        return product.orElseThrow(() -> new RuntimeException("Product not found"));
+        log.info("getProduct" + Constants.BEGIN_SERVICE);
+        try {
+            Optional<Product> product = productRepository.findById(id);
+            if (!product.isPresent()) {
+                throw new NotFoundException();
+            }
+            return product.get();
+        } finally {
+            log.info("getProduct" + Constants.END_SERVICE);
+        }
     }
 
     @Override
-    public void createProduct() {
-        Product product = new Product();
-        product.setId(UUID.randomUUID());
-        product.setName("Thạch rau cau");
-        product.setDescription("Ngon vỗn lài");
-        product.setPrice(BigDecimal.valueOf(50000));
-        productRepository.save(product);
+    public void createProduct(CreateProductRequest request) {
+        log.info("createProduct" + Constants.BEGIN_SERVICE);
+        try {
+            Product product = Product.builder()
+                    .id(UUID.randomUUID())
+                    .name(request.getName())
+                    .description(request.getDescription())
+                    .price(BigDecimal.valueOf(50000))
+                    .build();
+            productRepository.save(product);
+        } finally {
+            log.info("createProduct" + Constants.END_SERVICE);
+        }
     }
 }

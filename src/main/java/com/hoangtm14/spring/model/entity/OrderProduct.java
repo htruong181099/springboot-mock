@@ -5,11 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -17,12 +14,15 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order")
-public class Order extends AuditedEntity {
+@Table(name = "order_product")
+public class OrderProduct extends AuditedEntity {
     @Id
     private UUID id;
-    private UUID userId;
-    private BigDecimal totalAmount;
-    private Date orderDate;
+    private UUID orderId;
+    private UUID productId;
+    private int quantity;
+    private BigDecimal amount;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private Product product;
 }
