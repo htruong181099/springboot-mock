@@ -44,5 +44,4 @@ public class AuditedEntity {
     @Column(name = "updated_by")
     @LastModifiedBy
     private String updatedBy;
-
 }

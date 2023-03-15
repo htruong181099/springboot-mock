@@ -1,4 +1,4 @@
-package com.hoangtm14.spring.model.response;
+package com.hoangtm14.spring.model.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.hoangtm14.spring.exception;
 
-import com.hoangtm14.spring.model.response.ErrorResponse;
+import com.hoangtm14.spring.model.dto.response.ErrorResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,5 +1,6 @@
 package com.hoangtm14.spring.config;
 
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -12,10 +13,11 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableJpaRepositories (
+@EnableJpaRepositories(
         entityManagerFactoryRef = "entityManager",
         basePackages = "com.hoangtm14.spring"
 )
+@EntityScan(basePackages = {"com.hoangtm14.spring.model.entity"})
 @PropertySource("classpath:application.properties")
 @EnableJpaAuditing(auditorAwareRef = "springAuditorAware")
 public class DatabaseConfig {
@@ -26,7 +28,7 @@ public class DatabaseConfig {
     }
 
     @Bean(name = "entityManager")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(){
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource);
