@@ -1,5 +1,6 @@
 package com.hoangtm14.spring.exception;
 
+import com.hoangtm14.spring.constants.MessageCode;
 import com.hoangtm14.spring.model.dto.response.ErrorResponse;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,15 +14,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Objects;
+
 @Slf4j
 @NoArgsConstructor
 @RestControllerAdvice
-public class SpringExceptionHandler {
+public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler({Exception.class})
     public ResponseEntity<?> handleInternalServerError(Exception e) {
         log.error("Exception", e);
-        ErrorResponse error = new ErrorResponse("E_500", "Internal Server error");
+        ErrorResponse error = new ErrorResponse(MessageCode.E_500.getCode(), MessageCode.E_500.getMessage());
         return ResponseEntity.internalServerError().body(error);
     }
 
@@ -48,12 +51,12 @@ public class SpringExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationExceptionValidationException(MethodArgumentNotValidException e) {
+    public ResponseEntity<?> handleValidationException(MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException", e);
         String field = e.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getField)
                 .findFirst()
-                .orElse(e.getFieldError().getField());
+                .orElse(Objects.requireNonNull(e.getFieldError()).getField());
         String errorCode = e.getBindingResult().getFieldErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .findFirst()
@@ -64,10 +67,12 @@ public class SpringExceptionHandler {
                 .body(errorResponse);
     }
 
+    @ResponseBody
+    @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException e) {
         log.error("BadCredentialsException", e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponse("E_BAD_CREDENTIALS", "Bad Credentials"));
+                .body(new ErrorResponse(MessageCode.E_BAD_CREDENTIALS.getCode(), MessageCode.E_BAD_CREDENTIALS.getMessage()));
     }
 
 

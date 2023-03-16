@@ -30,4 +30,6 @@ public class Product extends AuditedEntity {
     private BigDecimal price;
     @Column(name = "thumbnail")
     private String thumbnail;
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 }

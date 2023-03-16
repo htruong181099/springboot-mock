@@ -3,21 +3,16 @@ package com.hoangtm14.spring.model.dto.request;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Data
 public class RegisterRequest {
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "E_NOT_EMPTY")
     private String username;
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "E_NOT_EMPTY")
     private String password;
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "E_NOT_EMPTY")
     private String name;
-    @NotNull
-    @NotEmpty
+    @NotEmpty(message = "E_NOT_EMPTY")
     private String role;
 
 }

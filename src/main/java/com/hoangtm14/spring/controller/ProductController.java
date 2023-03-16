@@ -5,8 +5,10 @@ import com.hoangtm14.spring.model.dto.request.CreateProductRequest;
 import com.hoangtm14.spring.model.dto.request.UpdateProductRequest;
 import com.hoangtm14.spring.model.entity.Product;
 import com.hoangtm14.spring.service.ProductService;
+import com.hoangtm14.spring.service.UploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,8 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private UploadService uploadService;
 
     @GetMapping("/list")
     public ResponseEntity<List<Product>> getAllProducts() {
@@ -42,23 +46,28 @@ public class ProductController {
         }
     }
 
-    @PostMapping("")
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody CreateProductRequest request) {
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Product> createProduct(@Valid @ModelAttribute CreateProductRequest request) {
         log.info("createProduct" + Constants.BEGIN_API);
         try {
-            productService.createProduct(request);
-            return ResponseEntity.ok().body(null);
+            String thumbnailUrl = uploadService.uploadFile(request.getThumbnail());
+            Product product = productService.createProduct(request, thumbnailUrl);
+            return ResponseEntity.ok().body(product);
         } finally {
             log.info("createProduct" + Constants.END_API);
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Product> updateProduct(@PathVariable("id") String productId,
-                                                 @Valid @RequestBody UpdateProductRequest request) {
+                                                 @Valid @ModelAttribute UpdateProductRequest request) {
         log.info("updateProduct" + Constants.BEGIN_API);
         try {
-            productService.updateProduct(UUID.fromString(productId), request);
+            String thumbnailUrl = null;
+            if (!request.getThumbnail().isEmpty()) {
+                thumbnailUrl = uploadService.uploadFile(request.getThumbnail());
+            }
+            productService.updateProduct(UUID.fromString(productId), request, thumbnailUrl);
             return ResponseEntity.ok().body(null);
         } finally {
             log.info("updateProduct" + Constants.END_API);

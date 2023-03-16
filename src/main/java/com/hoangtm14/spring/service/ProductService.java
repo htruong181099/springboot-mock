@@ -12,9 +12,11 @@ public interface ProductService {
 
     Product getProduct(UUID id);
 
-    void createProduct(CreateProductRequest request);
+    Product createProduct(CreateProductRequest request, String thumbnailUrl);
 
-    void updateProduct(UUID productId, UpdateProductRequest request);
+    void updateProduct(UUID productId, UpdateProductRequest request, String thumbnailUrl);
 
     void deleteProduct(UUID productId);
+
+    void deleteProductPermanently(UUID productId);
 }
