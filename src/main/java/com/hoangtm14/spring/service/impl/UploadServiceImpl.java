@@ -5,6 +5,8 @@ import com.hoangtm14.spring.constants.MessageCode;
 import com.hoangtm14.spring.exception.BadRequestException;
 import com.hoangtm14.spring.model.dto.response.UploadApiResponse;
 import com.hoangtm14.spring.service.UploadService;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -20,9 +22,11 @@ import java.util.Objects;
 
 @Slf4j
 @Service
+@AllArgsConstructor
+@NoArgsConstructor
 public class UploadServiceImpl implements UploadService {
-
     public static final String FILE = "file";
+    private RestTemplate restTemplate;
 
     @Value("${api.upload.url}")
     private String apiUrl;
@@ -49,7 +53,6 @@ public class UploadServiceImpl implements UploadService {
             body.add(FILE, file.getResource());
 
             HttpEntity<MultiValueMap<String, Object>> entity = new HttpEntity<>(body, headers);
-            RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<UploadApiResponse> response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, UploadApiResponse.class);
 
             return Objects.requireNonNull(response.getBody()).getUrl();

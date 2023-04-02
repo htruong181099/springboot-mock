@@ -17,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +30,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
-    public PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void register(RegisterRequest request) {
@@ -71,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserDetails getUserById(UUID userId) {
-        log.info("login" + Constants.BEGIN_SERVICE);
+        log.info("getUserById" + Constants.BEGIN_SERVICE);
         try {
             Optional<User> user = userRepository.findById(userId);
             if (!user.isPresent()) {
@@ -79,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
             }
             return new CustomUserDetails(user.get());
         } finally {
-            log.info("login" + Constants.END_SERVICE);
+            log.info("getUserById" + Constants.END_SERVICE);
         }
 
     }

@@ -26,7 +26,7 @@ public class ProductController {
     @Autowired
     private UploadService uploadService;
 
-    @GetMapping("/list")
+    @GetMapping("")
     public ResponseEntity<List<Product>> getAllProducts() {
         log.info("getAllProducts" + Constants.BEGIN_API);
         try {
@@ -71,6 +71,38 @@ public class ProductController {
             return ResponseEntity.ok().body(null);
         } finally {
             log.info("updateProduct" + Constants.END_API);
+        }
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<?> deleteProductPermanently(@PathVariable("id") String productId) {
+        log.info("deleteProductPermanently" + Constants.BEGIN_API);
+        try {
+            productService.deleteProductPermanently(UUID.fromString(productId));
+            return ResponseEntity.ok().body(null);
+        } finally {
+            log.info("deleteProductPermanently" + Constants.END_API);
+        }
+    }
+
+    @PostMapping(value = "/{id}/delete")
+    public ResponseEntity<?> deleteProduct(@PathVariable("id") String productId) {
+        log.info("deleteProduct" + Constants.BEGIN_API);
+        try {
+            productService.deleteProduct(UUID.fromString(productId));
+            return ResponseEntity.ok().body(null);
+        } finally {
+            log.info("deleteProduct" + Constants.END_API);
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAll() {
+        log.info("getAll" + Constants.BEGIN_API);
+        try {
+            return ResponseEntity.ok().body(productService.getAll());
+        } finally {
+            log.info("getAll" + Constants.END_API);
         }
     }
 }

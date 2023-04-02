@@ -3,3 +3,15 @@ api:
     url: http://103.200.20.88/api/v1/storage/upload
     key: 1f9b30k6-86d2-47f3-c54f-b2d446f3dc85
     secret: 1J`?6Tkl6~BX^KBjVF4A88dW
+
+rest:
+  client:
+    connection-timeout: 30000
+    read-timeout: 30000
+
+jwt:
+  secret: ronaldo-siuuu
+  expiration: 100000000
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml

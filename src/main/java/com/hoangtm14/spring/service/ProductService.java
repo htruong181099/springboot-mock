@@ -19,4 +19,6 @@ public interface ProductService {
     void deleteProduct(UUID productId);
 
     void deleteProductPermanently(UUID productId);
+
+    List<Product> getAll();
 }

@@ -2,6 +2,7 @@ package com.hoangtm14.spring.service.impl;
 
 import com.hoangtm14.spring.constants.Constants;
 import com.hoangtm14.spring.exception.NotFoundException;
+import com.hoangtm14.spring.mapper.ProductMapper;
 import com.hoangtm14.spring.model.dto.request.CreateProductRequest;
 import com.hoangtm14.spring.model.dto.request.UpdateProductRequest;
 import com.hoangtm14.spring.model.entity.Product;
@@ -11,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +22,9 @@ import java.util.UUID;
 public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ProductMapper productMapper;
 
     @Override
     public List<Product> getAllProducts() {
@@ -89,7 +92,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public void deleteProduct(UUID productId) {
         log.info("deleteProduct" + Constants.BEGIN_SERVICE);
         try {
@@ -106,6 +108,16 @@ public class ProductServiceImpl implements ProductService {
             productRepository.deleteById(productId);
         } finally {
             log.info("deleteProductPermanently" + Constants.END_SERVICE);
+        }
+    }
+
+    @Override
+    public List<Product> getAll() {
+        log.info("getAll" + Constants.BEGIN_SERVICE);
+        try {
+            return productMapper.findAll();
+        } finally {
+            log.info("getAll" + Constants.END_SERVICE);
         }
     }
 }

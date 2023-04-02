@@ -11,7 +11,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -60,13 +59,26 @@ public class WebSecurityConfig {
                 "/v2/api-doc"
         };
 
+        String[] adminRoutesList = new String[]{
+                "/**"
+        };
+        String[] userRoutesList = new String[]{};
+        String[] sellerRoutesList = new String[]{
+                "/product/revenue",
+                "/product/**/revenue",
+        };
+
         http.cors().and()
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers(whiteList)
                 .permitAll()
-                .antMatchers("/product", "/product/*")
+                .antMatchers(adminRoutesList)
                 .hasAuthority(Constants.Roles.ADMIN)
+//                .antMatchers(userRoutesList)
+//                .hasAuthority(Constants.Roles.USER)
+                .antMatchers(sellerRoutesList)
+                .hasAuthority(Constants.Roles.SELLER)
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -75,20 +87,5 @@ public class WebSecurityConfig {
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(securityFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.debug(false)
-                .ignoring()
-                .antMatchers("/login")
-                .antMatchers("/actuator/**")
-                .antMatchers("/v2/api-docs")
-                .antMatchers("/v3/api-docs/**")
-                .antMatchers("/configuration/**")
-                .antMatchers("/swagger*/**")
-                .antMatchers("/webjars/**")
-                .antMatchers("/swagger-ui/**");
-
     }
 }
